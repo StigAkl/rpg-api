@@ -17,7 +17,7 @@ player.save().then((player) => {
     console.log("Something went wrong: ", error); 
 })
   
-app.get("/", (req, res) => {
+app.get("/player", (req, res) => {
     const player = new Player({
         name: "Stig", 
         email: "stg@hotmail.no",
@@ -30,9 +30,7 @@ app.get("/", (req, res) => {
     }).catch((error) => {
         res.status(500).send("Something went wrong: ", error);  
     })
-
-
-})
+});
 app.listen(port, (req, res) => {
     console.log("Listening on port ", port); 
 }); 
