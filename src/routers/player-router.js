@@ -66,4 +66,14 @@ router.post("/api/players/auth", async (req, res) => {
     }
 });
 
+router.put("/api/players", async (req, res) => {
+    const updates = Object.keys(req.body); 
+    const allowedUpdates = ["level", "experience"]; 
+});
+
+router.patch("/api/players", async (req, res) => { 
+    console.log(req);
+    //res.json(req); 
+}); 
+
 module.exports = router; 
