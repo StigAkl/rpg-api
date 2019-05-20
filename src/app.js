@@ -26,6 +26,7 @@ app.get("/player", (req, res) => {
     }); 
     
     player.save().then((player) => {
+        player.env = process.env.ENV_TEST; 
         res.send(player); 
     }).catch((error) => {
         res.status(500).send("Something went wrong: ", error);  
