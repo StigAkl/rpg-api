@@ -23,7 +23,7 @@ const Player = mongoose.model("Player", {
         default: 10000, 
         validate(value) {
             if(value < 0) {
-                throw new Error("Value can't be less than 0"); 
+                throw new Error("Money can't be less than 0"); 
             }
         }
     },
