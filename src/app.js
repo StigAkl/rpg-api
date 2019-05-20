@@ -1,16 +1,14 @@
-require('./db/mongoose'); 
+require("./db/mongoose"); 
 const express = require("express"); 
 const port = process.env.PORT || 3001; 
 const app = express(); 
-const subdomain = require("express-subdomain"); 
 const playerRouter = require("./routers/player-router"); 
-
-
-app.use(subdomain("api", playerRouter));
+const Player = require('./entities/player'); 
 
 app.use(express.json()); 
+app.use(playerRouter);
+
 
 app.listen(port, (req, res) => {
     console.log("Listening on port ", port); 
 }); 
-

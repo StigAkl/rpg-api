@@ -1,18 +1,22 @@
 const mongoose = require("mongoose"); 
 const validator = require("validator"); 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken"); 
+
 
 const playerSchema = new mongoose.Schema({
     username: {
         type: String, 
         required: true, 
-        trim: true
+        trim: true,
+        unique: true
     },
     email: {
         type: String, 
         require: true, 
         trim: true, 
         lowercase: true, 
+        unique: true,
         validate(value) {
             if(!validator.isEmail(value)) {
                 throw new Error("Invalid email"); 
@@ -47,8 +51,47 @@ const playerSchema = new mongoose.Schema({
                 throw new Error("Level must be between 0 and 100"); 
             }
         }
+    },
+    token: {
+        type: String, 
+        required: true
     }
 }); 
+
+playerSchema.methods.toJSON = function() {
+    const player = this.toObject();
+
+    delete player.password; 
+    delete player.token; 
+
+    return player; 
+}
+
+playerSchema.statics.findByCredentials = async (email, password) => {
+    const user = await Player.findOne({ email});
+    if(!user) {
+        throw new Error("Wrong username / Password"); 
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password); 
+
+    if(!isMatch) {
+        throw new Error("Wrong username / Password"); 
+    }
+
+    return user; 
+}
+
+playerSchema.methods.getToken = async function () {
+    const player = this; 
+    console.log(player); 
+    const token = await jwt.sign({ _id: player._id.toString() }, "playerSecret");
+
+    player.token = token; 
+    await player.save(); 
+
+    return token; 
+}
 
 playerSchema.pre("save", async function(next) {
     const player = this; 
@@ -58,7 +101,7 @@ playerSchema.pre("save", async function(next) {
     }
 
     next(); 
-})
+});
 
 const Player = mongoose.model("Player", playerSchema);
 
