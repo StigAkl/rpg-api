@@ -2,36 +2,14 @@ require('./db/mongoose');
 const express = require("express"); 
 const port = process.env.PORT || 3001; 
 const app = express(); 
-const Player = require('./entities/player'); 
+const subdomain = require("express-subdomain"); 
+const playerRouter = require("./routers/player-router"); 
 
-const player = new Player({
-    name: "Stig", 
-    email: "stg@hotmail.no",
-    username: "stigakl",
-    password: "kake123"
-}); 
 
-player.save().then((player) => {
-    console.log("Player created:", player); 
-}).catch((error) => {
-    console.log("Something went wrong: ", error); 
-})
-  
-app.get("/player", (req, res) => {
-    const player = new Player({
-        name: "Stig", 
-        email: "stg@hotmail.no",
-        username: "stigakl",
-        password: "kake123"
-    }); 
-    
-    player.save().then((player) => {
-        const arr = [process.env.ENV_TEST, player];
-        res.send(arr); 
-    }).catch((error) => {
-        res.status(500).send("Something went wrong: ", error);  
-    })
-});
+app.use(subdomain("api", playerRouter));
+
+app.use(express.json()); 
+
 app.listen(port, (req, res) => {
     console.log("Listening on port ", port); 
 }); 
