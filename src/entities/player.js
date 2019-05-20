@@ -1,7 +1,8 @@
 const mongoose = require("mongoose"); 
 const validator = require("validator"); 
+const bcrypt = require("bcrypt");
 
-const Player = mongoose.model("Player", {
+const playerSchema = new mongoose.Schema({
     username: {
         type: String, 
         required: true, 
@@ -18,6 +19,17 @@ const Player = mongoose.model("Player", {
             };
         }
     }, 
+    password: {
+        type: String, 
+        required: true, 
+        minlength: 7, 
+        trim: true, 
+        validate(value) {
+            if(value.toLowerCase().includes("password")) {
+                throw new Error("Password cannot ocntain 'password'"); 
+            }
+        }
+    },
     money: {
         type: Number, 
         default: 10000, 
@@ -36,6 +48,18 @@ const Player = mongoose.model("Player", {
             }
         }
     }
-});
+}); 
+
+playerSchema.pre("save", async function(next) {
+    const player = this; 
+
+    if(player.isModified("password")) {
+        player.password = await bcrypt.hash(player.password, 8); 
+    }
+
+    next(); 
+})
+
+const Player = mongoose.model("Player", playerSchema);
 
 module.exports = Player;
