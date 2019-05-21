@@ -50,7 +50,7 @@ router.get("/api/playerinformation", auth, async (req, res) => {
         res.send(player); 
     } catch(e) {
         res.status(400).send({
-            error: "Could not fetch player information" + e
+            error: "Could not fetch player information" + e + id
         });
     }
 });
