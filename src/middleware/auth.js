@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const Player = require("../entities/player");
 
 const auth = async (req, res, next) => {
+
     try {
         const token = req.header("Authorization").replace("Bearer ", ""); 
         const decodedToken = jwt.verify(token, "playerSecret")

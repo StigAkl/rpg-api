@@ -28,7 +28,7 @@ router.get("/api/players/:id", async (req, res) => {
         if(!player) {
             return res.status(404).send(); 
         } else {
-            res.send(user); 
+            res.send(player); 
         }
     } catch(e) {
         res.status(500).send({
@@ -37,14 +37,32 @@ router.get("/api/players/:id", async (req, res) => {
     }
 });
 
+router.get("/api/playerinformation", auth, async (req, res) => {
+    
+    const id = req.query.id; 
+    try  {
+        const player = await Player.findById(id);
+
+        if(!player) {
+            throw new Error("Player not found"); 
+        }
+
+        res.send(player); 
+    } catch(e) {
+        res.status(400).send({
+            error: "Could not fetch player information" + e
+        });
+    }
+});
+
 router.post("/api/players", async (req, res) => {
     try {
         const player = new Player(req.body);
         await player.save();
-        res.status(201).send(user);  
+        res.status(201).send(player);  
     } catch(error) {
         res.status(400).send({
-            error: "Could not create user: " + error
+            error: "Could not create player: " + error
         });
     }
 })
@@ -61,7 +79,7 @@ router.post("/api/players/auth", async (req, res) => {
         res.send({player, token}); 
     } catch(e) {
         res.status(400).send({
-            error: "Failed to authenticate player" + e
+            error: "Could not log in. Make sure username and password is correct"
         });
     }
 });
