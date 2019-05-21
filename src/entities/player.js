@@ -53,8 +53,7 @@ const playerSchema = new mongoose.Schema({
         }
     },
     token: {
-        type: String, 
-        required: true
+        type: String
     }
 }); 
 
