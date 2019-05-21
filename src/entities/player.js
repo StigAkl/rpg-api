@@ -84,7 +84,7 @@ playerSchema.statics.findByCredentials = async (email, password) => {
 playerSchema.methods.getToken = async function () {
     const player = this; 
     console.log(player); 
-    const token = await jwt.sign({ _id: player._id.toString() }, tokenSecret, {expiresIn: "3600s"});
+    const token = await jwt.sign({ _id: player._id.toString() }, tokenSecret, {expiresIn: "300s"});
 
     player.token = token; 
     await player.save(); 
